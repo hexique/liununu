@@ -113,18 +113,47 @@ function generateYear(len) {
 }
 
 function generateSeason(len) {
-  firstMonth = new Date().getMonth() + 1 - (new Date().getMonth() + 1) % 3
-  const startTimeOfThisSeason = new Date(`${thisYear}-${firstMonth.toString().padStart(2, "0")}-01T00:00:00+00:00`).getTime()
-  const endTimeOfThisSeason = new Date(`${thisYear}-${(firstMonth + 4).toString().padStart(2, "0")}-01T00:00:00+00:00`).getTime()
-  progressOfThisSeason = (Date.now() - startTimeOfThisSeason) / (endTimeOfThisSeason - startTimeOfThisSeason)
+  const now = new Date();
+  const thisYear = now.getFullYear();
+
+  const currentMonth = now.getMonth() + 1;
+  const firstMonth = currentMonth - ((currentMonth - 1) % 3);
+
+  const startTimeOfThisSeason = new Date(`${thisYear}-${firstMonth.toString().padStart(2, "0")}-01T00:00:00+00:00`).getTime();
+  
+  const lastMonth = firstMonth + 2;
+  let endYear = thisYear;
+  let endMonth = lastMonth + 1;
+  
+  if (endMonth > 12) {
+    endMonth = 1;
+    endYear = thisYear + 1;
+  }
+  
+  const endTimeOfThisSeason = new Date(`${endYear}-${endMonth.toString().padStart(2, "0")}-01T00:00:00+00:00`).getTime();
+  
+  const progressOfThisSeason = (Date.now() - startTimeOfThisSeason) / (endTimeOfThisSeason - startTimeOfThisSeason);
   return generateProgressBar(progressOfThisSeason, len, 10000000, 1);
 }
 
 function generateMonth(len) {
-  thisMonth = new Date().getMonth()
-  const startTimeOfThisMonth = new Date(`${thisYear}-${(thisMonth+1).toString().padStart(2, "0")}-01T00:00:00+00:00`).getTime()
-  const endTimeOfThisMonth = new Date(`${thisYear}-${(thisMonth+2).toString().padStart(2, "0")}-01T00:00:00+00:00`).getTime()
-  progressOfThisMonth = (Date.now() - startTimeOfThisMonth) / (endTimeOfThisMonth - startTimeOfThisMonth)
+  const now = new Date();
+  const thisYear = now.getFullYear();
+  const thisMonth = now.getMonth() + 1; // +1 чтобы получить 1-12
+  
+  const startTimeOfThisMonth = new Date(`${thisYear}-${thisMonth.toString().padStart(2, "0")}-01T00:00:00+00:00`).getTime();
+
+  let nextMonth = thisMonth + 1;
+  let nextYear = thisYear;
+  
+  if (nextMonth > 12) {
+    nextMonth = 1;
+    nextYear = thisYear + 1;
+  }
+  
+  const endTimeOfThisMonth = new Date(`${nextYear}-${nextMonth.toString().padStart(2, "0")}-01T00:00:00+00:00`).getTime();
+  
+  const progressOfThisMonth = (Date.now() - startTimeOfThisMonth) / (endTimeOfThisMonth - startTimeOfThisMonth);
   return generateProgressBar(progressOfThisMonth, len, 10000000, 2);
 }
 
